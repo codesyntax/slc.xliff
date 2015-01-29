@@ -219,6 +219,11 @@ class XLIFFImporter(object):
                         value = RichTextValue(value)
                     schema[name].set(target_ob, value)
 
+            ######### hemen qSEO_title eta qSEO_description jarri behar dira####
+            import pdb; pdb.set_trace()
+            for seo_value in values:
+                if seo_value.startswith('qSEO_'):
+                    target_ob.manage_addProperty(seo_value, values[seo_value], 'string')
         else:
             # Archetypes
             target_ob.processForm(data=1, metadata=1, values=values)
@@ -386,10 +391,18 @@ def _guessLanguage(filename):
     or at the end of the string prefixed by an _ just before the extension
     or preceded and followed by an _
     """
-
     site = getSite()
     portal_languages = getToolByName(site, 'portal_languages')
+
     langs = portal_languages.getSupportedLanguages()
+
+    if portal_languages.use_combined_language_codes:
+        if filename.endswith('.html'):
+            elems = filename.split('.html')[0].split('_')
+            if elems > 3:
+                lang = elems[-1].lower()
+                if lang in langs:
+                    return lang
 
     if len(filename) > 3 and filename[2] in ['_', '-']:
         lang = filename[0:2].lower()
