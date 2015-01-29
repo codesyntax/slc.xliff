@@ -39,17 +39,23 @@ class BaseDXAttributeExtractor(object):
         attrs = []
 
         for key in self.attrs:
-            field = schema[key]
-            if ILanguageIndependentField.providedBy(field):
-                logger.warn(
-                    "Exporting language independent attribute %s, "
-                    "this may give unexpected results during import such as all "
-                    "language versions have the value of the last language set "
-                    "in the attribute!" % key)
+            if key.startswith('qSEO_'):
+                if self.context.hasProperty(key):
+                    value = self.context.getProperty(key)
+                else:
+                    continue
+            else:
+                field = schema[key]
+                if ILanguageIndependentField.providedBy(field):
+                    logger.warn(
+                        "Exporting language independent attribute %s, "
+                        "this may give unexpected results during import such as all "
+                        "language versions have the value of the last language set "
+                        "in the attribute!" % key)
 
-            value = field.get(self.context)
-            if IRichTextValue.providedBy(value):
-                value = value.raw
+                value = field.get(self.context)
+                if IRichTextValue.providedBy(value):
+                    value = value.raw
             if isinstance(value, unicode):
                 value = value.encode('UTF-8')
 
