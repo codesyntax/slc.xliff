@@ -37,7 +37,6 @@ class BaseDXAttributeExtractor(object):
 
         schema = get_dx_schema(self.context)
         attrs = []
-
         for key in self.attrs:
             if key.startswith('qSEO_'):
                 if self.context.hasProperty(key):
@@ -58,7 +57,8 @@ class BaseDXAttributeExtractor(object):
                     value = value.raw
             if isinstance(value, unicode):
                 value = value.encode('UTF-8')
-
+            if not value:
+                value = ''
             data = dict(id=key,
                         value=value,
                         source_language=source_language)
