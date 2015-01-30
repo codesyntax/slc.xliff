@@ -219,11 +219,13 @@ class XLIFFImporter(object):
                         value = RichTextValue(value)
                     schema[name].set(target_ob, value)
 
-            ######### hemen qSEO_title eta qSEO_description jarri behar dira####
-            import pdb; pdb.set_trace()
+            ######### set SEO Properties ####
             for seo_value in values:
                 if seo_value.startswith('qSEO_'):
-                    target_ob.manage_addProperty(seo_value, values[seo_value], 'string')
+                    if target_ob.hasProperty(seo_value):
+                        target_ob.manage_changeProperties({seo_value: values[seo_value]})
+                    else:
+                        target_ob.manage_addProperty(seo_value, values[seo_value], 'string')
         else:
             # Archetypes
             target_ob.processForm(data=1, metadata=1, values=values)
