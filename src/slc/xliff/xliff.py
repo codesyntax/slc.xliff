@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import zipfile
 import logging
-
 from Acquisition import aq_inner
 import HTMLParser
 
@@ -216,16 +215,16 @@ class XLIFFImporter(object):
                 elif name in values:
                     value = values[name]
                     if IRichText.providedBy(field):
-                        value = RichTextValue(value)
+                        value = RichTextValue(value,'text/html', 'text/x-html-safe')
                     schema[name].set(target_ob, value)
 
             ######### set SEO Properties ####
             for seo_value in values:
                 if seo_value.startswith('qSEO_'):
                     if target_ob.hasProperty(seo_value):
-                        target_ob.manage_changeProperties({seo_value: values[seo_value]})
+                        target_ob.manage_changeProperties({seo_value: values[seo_value].encode('utf-8')})
                     else:
-                        target_ob.manage_addProperty(seo_value, values[seo_value], 'string')
+                        target_ob.manage_addProperty(seo_value, values[seo_value.encode('utf-8')], 'string')
         else:
             # Archetypes
             target_ob.processForm(data=1, metadata=1, values=values)
