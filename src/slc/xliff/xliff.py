@@ -212,6 +212,9 @@ class XLIFFImporter(object):
                     # Copy from the original:
                     field.set(target_ob, field.get(source_ob))
                     pass
+                elif name == 'header_links':
+                    value = eval(values[name])
+                    schema[name].set(target_ob, value)
                 elif name in values:
                     value = values[name]
                     if IRichText.providedBy(field):
@@ -394,7 +397,6 @@ def _guessLanguage(filename):
     """
     site = getSite()
     portal_languages = getToolByName(site, 'portal_languages')
-
     langs = portal_languages.getSupportedLanguages()
 
     if portal_languages.use_combined_language_codes:
